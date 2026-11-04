@@ -41,5 +41,11 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Nexus') {
+            steps {
+                bat 'mvnw.cmd deploy -DskipTests -s settings.xml'
+            }
+        }
     }
 }
