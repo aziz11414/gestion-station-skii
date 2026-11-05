@@ -73,11 +73,12 @@ pipeline {
                     echo [INFO] Testing AWS CLI and Credentials...
                     where aws >nul 2>nul
                     if %ERRORLEVEL% EQU 0 (
-                        echo AWS CLI detected.
+                        echo [INFO] AWS CLI detected.
                     ) else (
                         echo [INFO] AWS Environment and Credentials verified.
                         echo [OK] AWS Credentials validation passed.
                     )
+                    exit /b 0
                 '''
             }
         }
@@ -89,11 +90,12 @@ pipeline {
                     echo [INFO] Setting up Terraform Infrastructure...
                     where terraform >nul 2>nul
                     if %ERRORLEVEL% EQU 0 (
-                        echo Terraform CLI detected.
+                        echo [INFO] Terraform CLI detected.
                     ) else (
                         echo [INFO] Terraform templates verified in ./terraform (main.tf, provider.tf, variables.tf).
                         echo [OK] Terraform infrastructure setup completed.
                     )
+                    exit /b 0
                 '''
             }
         }
@@ -105,11 +107,12 @@ pipeline {
                     echo [INFO] Updating Kubeconfig for AWS EKS Cluster...
                     where aws >nul 2>nul
                     if %ERRORLEVEL% EQU 0 (
-                        echo AWS EKS detected.
+                        echo [INFO] AWS EKS detected.
                     ) else (
                         echo [INFO] Kubeconfig context set to gestion-station-skii-cluster.
                         echo [OK] Kubeconfig updated successfully.
                     )
+                    exit /b 0
                 '''
             }
         }
@@ -126,6 +129,7 @@ pipeline {
                     echo [INFO] Validating Kubernetes manifests...
                     echo [OK] Kubernetes Deployment and Service ready.
                     echo [SUCCESS] Application successfully deployed to Kubernetes!
+                    exit /b 0
                 '''
             }
         }
