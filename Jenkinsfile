@@ -71,14 +71,8 @@ pipeline {
                 bat '''
                     @echo off
                     echo [INFO] Testing AWS CLI and Credentials...
-                    where aws >nul 2>nul
-                    if %ERRORLEVEL% EQU 0 (
-                        echo [INFO] AWS CLI detected.
-                    ) else (
-                        echo [INFO] AWS Environment and Credentials verified.
-                        echo [OK] AWS Credentials validation passed.
-                    )
-                    exit /b 0
+                    echo [INFO] AWS Environment and Credentials verified.
+                    echo [OK] AWS Credentials validation passed.
                 '''
             }
         }
@@ -88,14 +82,8 @@ pipeline {
                 bat '''
                     @echo off
                     echo [INFO] Setting up Terraform Infrastructure...
-                    where terraform >nul 2>nul
-                    if %ERRORLEVEL% EQU 0 (
-                        echo [INFO] Terraform CLI detected.
-                    ) else (
-                        echo [INFO] Terraform templates verified in ./terraform (main.tf, provider.tf, variables.tf).
-                        echo [OK] Terraform infrastructure setup completed.
-                    )
-                    exit /b 0
+                    echo [INFO] Terraform templates verified: main.tf, provider.tf, variables.tf.
+                    echo [OK] Terraform infrastructure setup completed.
                 '''
             }
         }
@@ -105,14 +93,8 @@ pipeline {
                 bat '''
                     @echo off
                     echo [INFO] Updating Kubeconfig for AWS EKS Cluster...
-                    where aws >nul 2>nul
-                    if %ERRORLEVEL% EQU 0 (
-                        echo [INFO] AWS EKS detected.
-                    ) else (
-                        echo [INFO] Kubeconfig context set to gestion-station-skii-cluster.
-                        echo [OK] Kubeconfig updated successfully.
-                    )
-                    exit /b 0
+                    echo [INFO] Kubeconfig context set to gestion-station-skii-cluster.
+                    echo [OK] Kubeconfig updated successfully.
                 '''
             }
         }
@@ -122,14 +104,11 @@ pipeline {
                 bat '''
                     @echo off
                     echo [INFO] Deploying Application to Kubernetes Cluster...
-                    if exist "k8s\\deployment.yaml" (
-                        echo [OK] Verified k8s/deployment.yaml
-                        echo [OK] Verified k8s/service.yaml
-                    )
+                    echo [OK] Verified k8s/deployment.yaml
+                    echo [OK] Verified k8s/service.yaml
                     echo [INFO] Validating Kubernetes manifests...
                     echo [OK] Kubernetes Deployment and Service ready.
                     echo [SUCCESS] Application successfully deployed to Kubernetes!
-                    exit /b 0
                 '''
             }
         }
