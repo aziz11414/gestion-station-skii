@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestion-station-skii
+  labels:
+    app: gestion-station-skii
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gestion-station-skii
+  template:
+    metadata:
+      labels:
+        app: gestion-station-skii
+    spec:
+      containers:
+      - name: gestion-station-skii
+        image: gestion-station-skii:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "1024Mi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
