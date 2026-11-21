@@ -245,6 +245,6 @@ gestion-station-skii/
 ## Auteur
 
 * **Mohamed Aziz Hammami** — *Étudiant en Génie Logiciel / DevOps & Cloud*
-* **Email** : `hammamimohamedaziz@isikef.u-jendouba.tn`
+* **Email** : `med.aziz2612@gmail.com`
 * **GitHub** : [@aziz11414](https://github.com/aziz11414)
 * **Projet Réalisé Dans le Cadre du Module** : DevOps, CI/CD & Cloud Computing (Enseignante : Mme Thouraya Louati)
