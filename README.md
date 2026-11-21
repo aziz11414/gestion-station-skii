@@ -1,13 +1,6 @@
-# 🎿 Gestion Station de Ski — Backend REST & Pipeline CI/CD DevOps
+# Gestion Station de Ski — Backend REST & Pipeline CI/CD DevOps
 
-[![OpenJDK](https://img.shields.io/badge/OpenJDK-Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.7.5-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Jenkins](https://img.shields.io/badge/Jenkins-Automation-D24939?style=for-the-badge&logo=jenkins&logoColor=white)](https://www.jenkins.io/)
-[![SonarQube](https://img.shields.io/badge/SonarQube-Community-4E9BCD?style=for-the-badge&logo=sonarqube&logoColor=white)](https://www.sonarqube.org/)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-CNCF-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
-[![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)](https://prometheus.io/)
-[![Grafana](https://img.shields.io/badge/Grafana-Dashboards-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com/)
+Projet d'ingénierie logicielle et d'intégration continue / déploiement continu (DevOps) pour la gestion d'un domaine skiable avec Spring Boot, Docker, Jenkins, SonarQube, Nexus, Kubernetes, Terraform et observabilité Prometheus / Grafana.
 
 ---
 
