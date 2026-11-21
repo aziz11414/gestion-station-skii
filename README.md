@@ -4,7 +4,7 @@ Projet d'ingénierie logicielle et d'intégration continue / déploiement contin
 
 ---
 
-## 📌 Présentation du Projet
+## Présentation du Projet
 
 **Gestion Station de Ski** est une application d'entreprise développée avec **Spring Boot 2.7.5** et **Java 17**. Elle expose une API REST complète pour orchestrer l'ensemble des activités d'un domaine skiable : la gestion des skieurs, des moniteurs, des cours, des inscriptions, des abonnements et des pistes.
 
@@ -12,22 +12,22 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
 
 ---
 
-## 📑 Sommaire
+## Sommaire
 
-1. [Architecture & Technologies](#-architecture--technologies)
-2. [Modèle Métier & API REST](#-modèle-métier--api-rest)
-3. [Documentation OpenAPI & Swagger](#-documentation-openapi--swagger)
-4. [Pipeline CI/CD Jenkins (12 Étapes)](#-pipeline-cicd-jenkins-12-étapes)
-5. [Conteneurisation & Déploiement Kubernetes](#-conteneurisation--déploiement-kubernetes)
-6. [Infrastructure as Code (Terraform) & Cloud AWS](#-infrastructure-as-code-terraform--cloud-aws)
-7. [Observabilité & Monitoring (Prometheus & Grafana)](#-observabilité--monitoring-prometheus--grafana)
-8. [Guide de Démarrage Rapide](#-guide-de-démarrage-rapide)
-9. [Structure du Dépôt](#-structure-du-dépôt)
-10. [Auteur](#-auteur)
+1. [Architecture & Technologies](#architecture--technologies)
+2. [Modèle Métier & API REST](#modèle-métier--api-rest)
+3. [Documentation OpenAPI & Swagger](#documentation-openapi--swagger)
+4. [Pipeline CI/CD Jenkins (12 Étapes)](#pipeline-cicd-jenkins-12-étapes)
+5. [Conteneurisation & Déploiement Kubernetes](#conteneurisation--déploiement-kubernetes)
+6. [Infrastructure as Code (Terraform) & Cloud AWS](#infrastructure-as-code-terraform--cloud-aws)
+7. [Observabilité & Monitoring (Prometheus & Grafana)](#observabilité--monitoring-prometheus--grafana)
+8. [Guide de Démarrage Rapide](#guide-de-démarrage-rapide)
+9. [Structure du Dépôt](#structure-du-dépôt)
+10. [Auteur](#auteur)
 
 ---
 
-## 🏗 Architecture & Technologies
+## Architecture & Technologies
 
 ### Backend Applicatif
 * **Langage** : Java 17 / Java 8 compatibility
@@ -50,7 +50,7 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
 
 ---
 
-## ⛷ Modèle Métier & API REST
+## Modèle Métier & API REST
 
 L'application est structurée selon une architecture en couches standard (**Controller → Service → Repository → Entity**) :
 
@@ -65,7 +65,7 @@ L'application est structurée selon une architecture en couches standard (**Cont
 
 ---
 
-## 📖 Documentation OpenAPI & Swagger
+## Documentation OpenAPI & Swagger
 
 L'API est documentée selon la spécification OpenAPI 3. Une fois l'application démarrée, l'interface interactive Swagger UI est accessible sur :
 
@@ -78,7 +78,7 @@ http://localhost:8080/stationSki/swagger-ui/index.html
 
 ---
 
-## 🚀 Pipeline CI/CD Jenkins (12 Étapes)
+## Pipeline CI/CD Jenkins (12 Étapes)
 
 Le pipeline d'intégration et de livraison continue est entièrement automatisé via le `Jenkinsfile` présent à la racine du projet :
 
@@ -108,7 +108,7 @@ Le pipeline d'intégration et de livraison continue est entièrement automatisé
 
 ---
 
-## 🐳 Conteneurisation & Déploiement Kubernetes
+## Conteneurisation & Déploiement Kubernetes
 
 ### Dockerfile
 L'application est encapsulée dans une image Docker légère basée sur OpenJDK 17 :
@@ -127,7 +127,7 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 
 ---
 
-## ☁️ Infrastructure as Code (Terraform) & Cloud AWS
+## Infrastructure as Code (Terraform) & Cloud AWS
 
 Le dossier `terraform/` contient la configuration déclarative de l'infrastructure Cloud hébergée sur **Amazon Web Services (AWS)** :
 
@@ -138,7 +138,7 @@ Le dossier `terraform/` contient la configuration déclarative de l'infrastructu
 
 ---
 
-## 📊 Observabilité & Monitoring (Prometheus & Grafana)
+## Observabilité & Monitoring (Prometheus & Grafana)
 
 Le dossier `monitoring/` contient l'infrastructure de surveillance prête à l'emploi via Docker Compose :
 
@@ -161,7 +161,7 @@ Le dossier `monitoring/` contient l'infrastructure de surveillance prête à l'e
 
 ---
 
-## 💻 Guide de Démarrage Rapide
+## Guide de Démarrage Rapide
 
 ### Prérequis
 * **JDK 17** ou supérieur installé
@@ -209,7 +209,7 @@ docker-compose up -d
 
 ---
 
-## 📁 Structure du Dépôt
+## Structure du Dépôt
 
 ```plaintext
 gestion-station-skii/
@@ -242,7 +242,7 @@ gestion-station-skii/
 
 ---
 
-## 👤 Auteur
+## Auteur
 
 * **Mohamed Aziz Hammami** — *Étudiant en Génie Logiciel / DevOps & Cloud*
 * **Email** : `hammamimohamedaziz@isikef.u-jendouba.tn`
