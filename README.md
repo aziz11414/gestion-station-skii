@@ -6,11 +6,11 @@ Projet d'ingénierie logicielle et d'intégration continue / déploiement contin
 
 ## Présentation du Projet
 
-**Gestion Station de Ski** est une application d'entreprise Full-Stack :
+**Gestion Station de Ski** est une application d'entreprise Full-Stack industrielle :
 - **Backend Spring Boot 2.7.5 & Java 17** : expose une API REST complète pour orchestrer l'ensemble des activités d'un domaine skiable (gestion des skieurs, moniteurs, cours, inscriptions, abonnements et pistes).
-- **Frontend Angular 17** : tableau de bord opérationnel moderne et responsive avec KPI temps réel, gestion interactive des skieurs, inscriptions aux cours et monitoring de la station.
+- **Frontend Angular 17** : tableau de bord opérationnel moderne et responsive avec KPI temps réel, gestion interactive des skieurs, inscriptions aux cours et surveillance de la station (Design System Manrope, palette Ink & Mist, profil de piste SVG).
 
-Le projet intègre une **chaîne industrielle DevOps complète** et automatisée : intégration continue (CI), analyse statique de code et couverture de tests, déploiement d'artefacts binaires sur Nexus, conteneurisation Docker, orchestration multi-conteneurs Docker Compose, provisionnement d'infrastructure as Code (IaC) avec Terraform sur AWS, orchestration de conteneurs avec Kubernetes, et supervision en temps réel avec Prometheus et Grafana.
+Le projet intègre une **chaîne industrielle DevOps complète** et automatisée : intégration continue (CI), analyse statique de code et couverture de tests, déploiement d'artefacts binaires sur Nexus, conteneurisation Docker, orchestration multi-conteneurs Docker Compose, notifications e-mails automatiques, provisionnement d'infrastructure as Code (IaC) avec Terraform sur AWS, orchestration de conteneurs avec Kubernetes sur AWS EKS, et supervision en temps réel avec Prometheus et Grafana.
 
 ---
 
@@ -19,20 +19,21 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
 1. [Architecture & Technologies](#architecture--technologies)
 2. [Modèle Métier & API REST](#modèle-métier--api-rest)
 3. [Documentation OpenAPI & Swagger](#documentation-openapi--swagger)
-4. [Pipeline CI/CD Jenkins (12 Étapes)](#pipeline-cicd-jenkins-12-étapes)
-5. [Conteneurisation & Déploiement Kubernetes](#conteneurisation--déploiement-kubernetes)
-6. [Infrastructure as Code (Terraform) & Cloud AWS](#infrastructure-as-code-terraform--cloud-aws)
-7. [Observabilité & Monitoring (Prometheus & Grafana)](#observabilité--monitoring-prometheus--grafana)
-8. [Guide de Démarrage Rapide](#guide-de-démarrage-rapide)
-9. [Structure du Dépôt](#structure-du-dépôt)
-10. [Auteur](#auteur)
+4. [Pipeline CI/CD Jenkins & Notifications E-mail](#pipeline-cicd-jenkins--notifications-e-mail)
+5. [Conteneurisation Docker & Orchestration Multi-Conteneurs](#conteneurisation-docker--orchestration-multi-conteneurs)
+6. [Déploiement Kubernetes sur AWS EKS (Full-Stack)](#déploiement-kubernetes-sur-aws-eks-full-stack)
+7. [Infrastructure as Code (Terraform) & Cloud AWS](#infrastructure-as-code-terraform--cloud-aws)
+8. [Observabilité & Monitoring (Prometheus & Grafana)](#observabilité--monitoring-prometheus--grafana)
+9. [Guide de Démarrage Rapide](#guide-de-démarrage-rapide)
+10. [Structure du Dépôt](#structure-du-dépôt)
+11. [Auteur](#auteur)
 
 ---
 
 ## Architecture & Technologies
 
 ### Backend Applicatif
-* **Langage** : Java 17 / Java 8 compatibility
+* **Langage** : Java 17 / Compatibilité Java 8
 * **Framework** : Spring Boot 2.7.5
   * Spring Data JPA / Hibernate (ORM & Persistance)
   * Spring Web (API RESTful)
@@ -40,6 +41,7 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
   * Springdoc OpenAPI 1.6.12 (Documentation interactive Swagger)
 * **Base de données** : MySQL 8.0 (Driver `mysql-connector-j`)
 * **Tests & Qualité** : JUnit 5, Mockito, JaCoCo (Couverture de code)
+* **Logging** : SLF4J structuré et normalisé
 
 ### Frontend Applicatif
 * **Framework** : Angular 17 (Architecture Standalone, TypeScript, RxJS)
@@ -47,15 +49,16 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
 * **Conteneurisation Frontend** : Docker multi-stage (`node:20-alpine` build + `nginx:1.27-alpine` runtime, image ultra-légère de 21 Mo)
 * **Orchestration Multi-conteneurs** : Docker Compose (`docker-compose.yml`) avec réseau unifié reliant Frontend (`:8082`) et Backend (`:8080`)
 
-
 ### Écosystème DevOps & Cloud
-* **Intégration Continue** : Jenkins (Pipeline Déclaratif as Code via `Jenkinsfile`)
+* **Intégration Continue** : Jenkins (Pipeline Déclaratif as Code via `Jenkinsfile` en 12 étapes)
+* **Déclenchement Automatisé** : Polling SCM et Webhook GitHub (Ngrok) pour builds automatiques à chaque commit
 * **Analyse de Qualité** : SonarQube (Quality Gate, détection des vulnérabilités, Code Smells et bugs)
 * **Gestionnaire d'Artefacts** : Sonatype Nexus Repository Manager (Dépôts `maven-releases` et `maven-snapshots`)
-* **Conteneurisation** : Docker & Dockerfile multi-stage
+* **Conteneurisation** : Docker & Dockerfile multi-stage pour Backend et Frontend
 * **Infrastructure as Code** : Terraform (Providers AWS, HashiCorp)
-* **Cloud & Orchestration** : AWS Academy Learner Lab (STS, IAM, VPC, EKS), Kubernetes Full-Stack Backend & Frontend (`k8s/deployment.yaml`, `k8s/service.yaml`, `k8s/frontend-deployment.yaml`, `k8s/frontend-service.yaml`)
+* **Cloud & Orchestration** : AWS Academy Learner Lab (STS, IAM, VPC, EKS), Kubernetes Full-Stack Backend & Frontend (`k8s/`)
 * **Supervision & Observabilité** : Prometheus (Collecte des métriques Spring Boot & Jenkins) et Grafana (Dashboards JVM, HTTP et Pipelines)
+* **Notifications** : Système d'e-mails étendu Jenkins (Extended E-mail avec template HTML responsive et logs)
 
 ---
 
@@ -87,7 +90,7 @@ http://localhost:8080/stationSki/swagger-ui/index.html
 
 ---
 
-## Pipeline CI/CD Jenkins (12 Étapes)
+## Pipeline CI/CD Jenkins & Notifications E-mail
 
 Le pipeline d'intégration et de livraison continue est entièrement automatisé via le `Jenkinsfile` présent à la racine du projet :
 
@@ -98,41 +101,81 @@ Le pipeline d'intégration et de livraison continue est entièrement automatisé
 |  1. CHECKOUT GIT          -> Récupération automatique du code source depuis GitHub                                  |
 |  2. MVN CLEAN             -> Nettoyage de l'espace de travail Maven                                                |
 |  3. ARTIFACT CONSTRUCTION -> Compilation et packaging du projet (JAR)                                             |
-|  4. UNIT TESTS            -> Exécution des tests unitaires Mockito & JUnit (rapports surefire)                     |
+|  4. UNIT TESTS            -> Exécution des tests unitaires Mockito & JUnit (rapports Surefire XML)                 |
 |  5. MVN SONARQUBE         -> Analyse statique de code & passage du Quality Gate SonarQube                           |
 |  6. PUBLISH TO NEXUS      -> Publication de l'artefact versionné sur Sonatype Nexus via settings.xml               |
 |  7. BUILDING OUR IMAGE    -> Construction de l'image Docker (docker build)                                         |
-|  8. DEPLOY OUR IMAGE      -> Tag et préparation de l'image Docker de version                                       |
+|  8. DEPLOY OUR IMAGE      -> Tag et préparation de l'image Docker de version (v1.0)                                |
 |  9. Test AWS Credentials  -> Validation des identifiants et tokens AWS Academy (STS / IAM)                         |
-| 10. SETUP TERRAFORM       -> Validation des templates d'infrastructure Terraform (main.tf, provider.tf)            |
+| 10. SETUP TERRAFORM       -> Validation de l'infrastructure Terraform (Security Group Ports 80 & 8080)             |
 | 11. UPDATE KUBECONFIG     -> Configuration du contexte Kubernetes pour le cluster AWS EKS                          |
-| 12. DEPLOY TO KUBERNETES  -> Déploiement des manifests Kubernetes (k8s/deployment.yaml, k8s/service.yaml)             |
+| 12. DEPLOY TO KUBERNETES  -> Déploiement Full-Stack Kubernetes EKS (Backend API & Frontend Angular)                |
 +--------------------------------------------------------------------------------------------------------------------+
 ```
 
+### Notifications E-mail Automatisées :
+À chaque exécution du pipeline, un rapport complet au format HTML responsive est expédié automatiquement à `med.aziz2612@gmail.com` :
+* Badge d'état dynamique (`✔ BUILD REUSSI` / `✖ BUILD ECHOUE`).
+* Métadonnées du build (Numéro, durée, commit GitHub).
+* Checklist visuelle des 12 étapes validées.
+* Extrait des dernières lignes de la console et journal complet attaché en pièce jointe (`build.log`).
+
 ### Configuration des Outils CI/CD :
+* **Jenkins Controller** : `http://localhost:8090` (Job : `gestion-station-skii-pipeline`)
 * **SonarQube** : `http://localhost:9000` (Projet `gestion-station-skii`)
 * **Sonatype Nexus** : `http://localhost:8081` (Dépôts Maven `maven-releases` et `maven-snapshots`)
-* **Jenkins Controller** : `http://localhost:8090`
 
 ---
 
-## Conteneurisation & Déploiement Kubernetes
+## Conteneurisation Docker & Orchestration Multi-Conteneurs
 
-### Dockerfile
-L'application est encapsulée dans une image Docker légère basée sur OpenJDK 17 :
-
+### 1. Dockerfile Backend (`Dockerfile`)
+L'application Spring Boot est encapsulée dans une image basée sur Eclipse Temurin 21 JRE Alpine :
 ```dockerfile
-FROM openjdk:17-alpine
+FROM eclipse-temurin:21-jre-alpine
 VOLUME /tmp
 EXPOSE 8080
-ADD target/gestion-station-skii-1.0.0.jar app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+COPY target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 
-### Manifests Kubernetes (`k8s/`)
-* **`k8s/deployment.yaml`** : Définit le déploiement du conteneur avec 2 réplicas, les sondes de disponibilité (`livenessProbe`, `readinessProbe`) et les limites de ressources.
-* **`k8s/service.yaml`** : Expose l'application via un Service de type `NodePort` ou `LoadBalancer` routant vers le port interne `8080`.
+### 2. Dockerfile Frontend (`station-ski-ui/Dockerfile`)
+L'application Angular 17 est construite via un build multi-stage garantissant une taille minimale de **21 Mo** :
+```dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build -- --configuration production
+
+FROM nginx:1.27-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist/station-ski-ui/browser /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### 3. Orchestration Docker Compose (`docker-compose.yml`)
+Permet de déployer et de relier l'ensemble de la pile applicative avec une seule commande :
+```bash
+docker compose up -d --build
+```
+* **Frontend Angular** : `http://localhost:8082`
+* **Backend Spring Boot** : `http://localhost:8080/stationSki`
+
+---
+
+## Déploiement Kubernetes sur AWS EKS (Full-Stack)
+
+Le dossier `k8s/` contient les manifestes déclaratifs prêts pour le cluster Amazon EKS :
+
+* **Backend Spring Boot :**
+  * `k8s/deployment.yaml` : Déploiement de l'API avec **2 réplicas** en haute disponibilité, sondes et limites de ressources (512 Mo à 1024 Mo RAM).
+  * `k8s/service.yaml` : Service de type `NodePort` exposant le port interne `8080` sur le port externe **`30080`**.
+* **Frontend Angular :**
+  * `k8s/frontend-deployment.yaml` : Déploiement du serveur Nginx avec **2 réplicas**, optimisé pour les charges Web.
+  * `k8s/frontend-service.yaml` : Service de type `NodePort` exposant le port Web `80` sur le port externe **`30082`**.
 
 ---
 
@@ -140,16 +183,18 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 
 Le dossier `terraform/` contient la configuration déclarative de l'infrastructure Cloud hébergée sur **Amazon Web Services (AWS)** :
 
-* **`provider.tf`** : Déclaration du provider AWS et de la région cible (`us-east-1`).
-* **`variables.tf`** : Paramétrage du cluster Kubernetes EKS, des tags et des sous-réseaux VPC.
-* **`main.tf`** : Provisionnement des ressources AWS (VPC, Security Groups, Cluster AWS EKS et Node Groups).
-* **Authentification** : Intégration sécurisée avec les sessions temporaires **AWS Academy Learner Lab** via `aws_access_key_id`, `aws_secret_access_key` et `aws_session_token`.
+* **`provider.tf`** : Déclaration du provider AWS et de la région cible (`us-east-1` pour AWS Academy Learner Lab).
+* **`variables.tf`** : Paramétrage du cluster Kubernetes EKS (`gestion-station-skii-cluster`).
+* **`main.tf`** : Création du groupe de sécurité (`gestion-station-skii-sg`) autorisant :
+  * Le port **`80`** : Trafic Web HTTP entrant pour l'interface Angular.
+  * Le port **`8080`** : Trafic API REST entrant pour le backend Spring Boot.
+  * Tout le trafic sortant (Egress).
 
 ---
 
 ## Observabilité & Monitoring (Prometheus & Grafana)
 
-Le dossier `monitoring/` contient l'infrastructure de surveillance prête à l'emploi via Docker Compose :
+Le dossier `monitoring/` contient l'infrastructure de surveillance prête à l'emploi :
 
 ```
 ├── monitoring/
@@ -163,18 +208,16 @@ Le dossier `monitoring/` contient l'infrastructure de surveillance prête à l'e
 │               └── dashboard.yml
 ```
 
-* **Prometheus (`http://localhost:9090`)** : Scrape automatiquement :
-  * Les métriques de performance de l'application Spring Boot via l'endpoint `/stationSki/actuator/prometheus`.
-  * Les métriques du serveur d'intégration continue Jenkins via `/prometheus/`.
-* **Grafana (`http://localhost:3000`)** : Tableaux de bord dynamiques visualisant le taux de requêtes, le temps de réponse HTTP, l'utilisation mémoire JVM (Heap/Non-Heap), les threads actifs et l'état des exécuteurs de build.
+* **Prometheus (`http://localhost:9090`)** : Scrape automatiquement les métriques de santé JVM de Spring Boot (`/stationSki/actuator/prometheus`) et de Jenkins (`/prometheus/`).
+* **Grafana (`http://localhost:3000`)** : Tableaux de bord dynamiques (temps de réponse HTTP, utilisation CPU/RAM de la JVM, statut des builds CI/CD).
 
 ---
 
 ## Guide de Démarrage Rapide
 
 ### Prérequis
-* **JDK 17** ou supérieur installé
-* **Apache Maven 3.8+** (ou utilisation du wrapper `./mvnw`)
+* **JDK 17** ou supérieur
+* **Node.js 20+** & **npm** (pour le frontend en développement)
 * **Docker & Docker Compose**
 * **MySQL Server 8.0**
 
@@ -184,37 +227,36 @@ git clone https://github.com/aziz11414/gestion-station-skii.git
 cd gestion-station-skii
 ```
 
-### 2. Configurer la Base de Données
-Dans `src/main/resources/application.properties`, vérifiez vos paramètres de connexion MySQL :
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/station_ski?createDatabaseIfNotExist=true&useSSL=false
-spring.datasource.username=root
-spring.datasource.password=root
-spring.jpa.hibernate.ddl-auto=update
-```
-
-### 3. Compiler et Exécuter les Tests
+### 2. Démarrage Rapide avec Docker Compose (Recommandé)
+Pour lancer instantanément le Frontend Angular et le Backend Spring Boot :
 ```bash
-# Compilation et packaging
-./mvnw clean package
-
-# Exécution des tests unitaires
-./mvnw test
+docker compose up -d --build
 ```
+* **Accès Frontend** : `http://localhost:8082`
+* **Accès Backend API** : `http://localhost:8080/stationSki`
+* **Documentation Swagger** : `http://localhost:8080/stationSki/swagger-ui/index.html`
 
-### 4. Démarrer l'Application
-```bash
-./mvnw spring-boot:run
-```
-L'application est disponible sur : `http://localhost:8080/stationSki`
+### 3. Démarrage en Mode Développement
+* **Backend Spring Boot :**
+  ```bash
+  ./mvnw clean package
+  ./mvnw spring-boot:run
+  ```
+* **Frontend Angular :**
+  ```bash
+  cd station-ski-ui
+  npm install
+  npm start
+  ```
+  Accessible sur : `http://localhost:4200`
 
-### 5. Lancer la Pile de Monitoring (Prometheus & Grafana)
+### 4. Lancer la Pile de Monitoring
 ```bash
 cd monitoring
 docker-compose up -d
 ```
 * **Prometheus** : `http://localhost:9090`
-* **Grafana** : `http://localhost:3000` *(Login par défaut : admin / admin)*
+* **Grafana** : `http://localhost:3000` *(Login : admin / admin)*
 
 ---
 
@@ -223,30 +265,34 @@ docker-compose up -d
 ```plaintext
 gestion-station-skii/
 ├── .mvn/wrapper/                  # Fichiers du wrapper Maven
-├── k8s/                           # Manifests Kubernetes (Deployment & Service)
-│   ├── deployment.yaml
-│   └── service.yaml
+├── k8s/                           # Manifests Kubernetes Full-Stack (AWS EKS)
+│   ├── deployment.yaml            # Déploiement Backend API (2 réplicas)
+│   ├── service.yaml               # Service Backend (NodePort 30080)
+│   ├── frontend-deployment.yaml   # Déploiement Frontend Angular (2 réplicas)
+│   └── frontend-service.yaml      # Service Frontend (NodePort 30082)
 ├── monitoring/                    # Stack de supervision & observabilité
 │   ├── docker-compose.yml
 │   ├── prometheus.yml
 │   └── grafana/
 ├── src/                           # Code source Java et ressources Spring Boot
-│   ├── main/
-│   │   ├── java/com/example/gestionstationskii/
-│   │   │   ├── controllers/       # Contrôleurs REST
-│   │   │   ├── entities/          # Entités JPA du domaine skiable
-│   │   │   ├── repositories/      # Interfaces Spring Data JPA
-│   │   │   └── services/          # Logique métier & implémentations
-│   │   └── resources/             # application.properties & configuration
-│   └── test/                      # Tests unitaires & mocks Mockito
+│   ├── main/java/...              # Contrôleurs, Entités, Services, WebConfig
+│   └── test/java/...              # Tests unitaires JUnit 5 & Mockito
+├── station-ski-ui/                # Frontend Angular 17 complet
+│   ├── src/                       # Composants Standalone, modèles, CSS Manrope
+│   ├── Dockerfile                 # Build multi-stage Node + Nginx (21 Mo)
+│   ├── nginx.conf                 # Configuration serveur Nginx SPA
+│   ├── angular.json
+│   └── package.json
 ├── terraform/                     # Infrastructure as Code pour AWS
-│   ├── main.tf
-│   ├── provider.tf
-│   └── variables.tf
-├── Dockerfile                     # Image Docker de l'application
-├── Jenkinsfile                    # Pipeline déclaratif CI/CD en 12 étapes
+│   ├── main.tf                    # Security Group Ports 80 & 8080
+│   ├── provider.tf                # Provider AWS us-east-1
+│   └── variables.tf               # Variables EKS
+├── Dockerfile                     # Image Docker du Backend Spring Boot
+├── docker-compose.yml             # Orchestration Multi-conteneurs Frontend + Backend
+├── Jenkinsfile                    # Pipeline déclaratif CI/CD en 12 étapes + Notifications
 ├── pom.xml                        # Descripteur de projet Maven & dépendances
-└── settings.xml                   # Configuration des identifiants et dépôts Nexus
+├── settings.xml                   # Configuration des identifiants et dépôts Nexus
+└── README.md                      # Documentation complète du projet
 ```
 
 ---
