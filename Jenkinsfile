@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+        pollSCM('* * * * *')
+    }
+
     environment {
         SONAR_TOKEN = 'squ_3b0e5c4d1892a616134ce7d8a8c49d5cbb441834'
         SONAR_HOST_URL = 'http://localhost:9000'
