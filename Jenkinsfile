@@ -117,7 +117,7 @@ pipeline {
                     echo [OK] Verified k8s/frontend-service.yaml (Frontend Service NodePort 30082)
                     echo [INFO] Validating Full-Stack Kubernetes manifests...
                     echo [OK] Kubernetes Deployments and Services ready for EKS cluster.
-                    echo [SUCCESS] Backend & Frontend successfully deployed to AWS Kubernetes!
+                    echo [SUCCESS] Backend and Frontend successfully deployed to AWS Kubernetes!
                 '''
             }
         }
