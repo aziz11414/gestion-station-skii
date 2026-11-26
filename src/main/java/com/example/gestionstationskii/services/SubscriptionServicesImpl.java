@@ -22,6 +22,8 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
 
     @Override
     public Subscription addSubscription(Subscription subscription) {
+        log.info("Création d'un nouvel abonnement [Type: {}, Prix: {} DT, Début: {}]",
+                subscription.getTypeSub(), subscription.getPrice(), subscription.getStartDate());
         switch (subscription.getTypeSub()) {
             case ANNUAL:
                 subscription.setEndDate(subscription.getStartDate().plusYears(1));
@@ -33,7 +35,10 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
                 subscription.setEndDate(subscription.getStartDate().plusMonths(1));
                 break;
         }
-        return subscriptionRepository.save(subscription);
+        Subscription saved = subscriptionRepository.save(subscription);
+        log.info("Abonnement créé avec succès ! [ID: {}, Type: {}, Date fin: {}]",
+                saved.getNumSub(), saved.getTypeSub(), saved.getEndDate());
+        return saved;
     }
 
     @Override

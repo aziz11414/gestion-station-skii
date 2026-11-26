@@ -24,17 +24,33 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
 
     @Override
     public Registration addRegistrationAndAssignToSkier(Registration registration, Long numSkier) {
+        log.info("Tentative d'inscription et assignation au skieur ID: {}", numSkier);
         Skier skier = skierRepository.findById(numSkier).orElse(null);
+        if (skier == null) {
+            log.warn("Impossible d'inscrire : Skieur ID {} introuvable", numSkier);
+            return null;
+        }
         registration.setSkier(skier);
-        return registrationRepository.save(registration);
+        Registration saved = registrationRepository.save(registration);
+        log.info("Inscription ID: {} ajoutée et assignée avec succès au skieur {} {}",
+                saved.getNumRegistration(), skier.getFirstName(), skier.getLastName());
+        return saved;
     }
 
     @Override
     public Registration assignRegistrationToCourse(Long numRegistration, Long numCourse) {
+        log.info("Assignation de l'inscription ID: {} au cours ID: {}", numRegistration, numCourse);
         Registration registration = registrationRepository.findById(numRegistration).orElse(null);
         Course course = courseRepository.findById(numCourse).orElse(null);
+        if (registration == null || course == null) {
+            log.warn("Échec d'assignation : Inscription ({}) ou Cours ({}) introuvable", numRegistration, numCourse);
+            return null;
+        }
         registration.setCourse(course);
-        return registrationRepository.save(registration);
+        Registration saved = registrationRepository.save(registration);
+        log.info("Inscription ID: {} assignée avec succès au cours [ID: {}, Type: {}]",
+                numRegistration, numCourse, course.getTypeCourse());
+        return saved;
     }
 
     @Transactional
