@@ -3,10 +3,18 @@
 
 resource "aws_security_group" "devops_sg" {
   name        = "gestion-station-skii-sg"
-  description = "Security group for Spring Boot Kubernetes Pods"
+  description = "Security group for Spring Boot Backend & Angular Frontend Kubernetes Pods"
 
   ingress {
-    description = "HTTP Traffic"
+    description = "Frontend HTTP Web Traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Backend REST API Traffic"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"

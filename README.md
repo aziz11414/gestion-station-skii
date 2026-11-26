@@ -54,7 +54,7 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
 * **Gestionnaire d'Artefacts** : Sonatype Nexus Repository Manager (Dépôts `maven-releases` et `maven-snapshots`)
 * **Conteneurisation** : Docker & Dockerfile multi-stage
 * **Infrastructure as Code** : Terraform (Providers AWS, HashiCorp)
-* **Cloud & Orchestration** : AWS Academy Learner Lab (STS, IAM, VPC, EKS), Kubernetes (`k8s/deployment.yaml`, `k8s/service.yaml`)
+* **Cloud & Orchestration** : AWS Academy Learner Lab (STS, IAM, VPC, EKS), Kubernetes Full-Stack Backend & Frontend (`k8s/deployment.yaml`, `k8s/service.yaml`, `k8s/frontend-deployment.yaml`, `k8s/frontend-service.yaml`)
 * **Supervision & Observabilité** : Prometheus (Collecte des métriques Spring Boot & Jenkins) et Grafana (Dashboards JVM, HTTP et Pipelines)
 
 ---

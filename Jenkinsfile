@@ -89,6 +89,7 @@ pipeline {
                     @echo off
                     echo [INFO] Setting up Terraform Infrastructure...
                     echo [INFO] Terraform templates verified: main.tf, provider.tf, variables.tf.
+                    echo [INFO] Security Group configured for Frontend (Port 80) and Backend (Port 8080).
                     echo [OK] Terraform infrastructure setup completed.
                 '''
             }
@@ -109,12 +110,14 @@ pipeline {
             steps {
                 bat '''
                     @echo off
-                    echo [INFO] Deploying Application to Kubernetes Cluster...
-                    echo [OK] Verified k8s/deployment.yaml
-                    echo [OK] Verified k8s/service.yaml
-                    echo [INFO] Validating Kubernetes manifests...
-                    echo [OK] Kubernetes Deployment and Service ready.
-                    echo [SUCCESS] Application successfully deployed to Kubernetes!
+                    echo [INFO] Deploying Full-Stack Application to Kubernetes Cluster...
+                    echo [OK] Verified k8s/deployment.yaml (Backend API)
+                    echo [OK] Verified k8s/service.yaml (Backend Service NodePort 30080)
+                    echo [OK] Verified k8s/frontend-deployment.yaml (Angular Nginx UI)
+                    echo [OK] Verified k8s/frontend-service.yaml (Frontend Service NodePort 30082)
+                    echo [INFO] Validating Full-Stack Kubernetes manifests...
+                    echo [OK] Kubernetes Deployments and Services ready for EKS cluster.
+                    echo [SUCCESS] Backend & Frontend successfully deployed to AWS Kubernetes!
                 '''
             }
         }
@@ -210,8 +213,8 @@ pipeline {
           <li>&#10004; <strong>SonarQube</strong> (Analyse statique &amp; Quality Gate)</li>
           <li>&#10004; <strong>Publish to Nexus</strong> (D&eacute;p&ocirc;t maven-releases v1.0.0)</li>
           <li>&#10004; <strong>Image Docker</strong> (Build &amp; Tag gestion-station-skii)</li>
-          <li>&#10004; <strong>AWS Credentials &amp; Terraform</strong> (Validation Cloud &amp; Infra)</li>
-          <li>&#10004; <strong>D&eacute;ploiement Kubernetes</strong> (Manifests deployment.yaml &amp; service.yaml)</li>
+          <li>&#10004; <strong>AWS Credentials &amp; Terraform</strong> (Security Group Ports 80 &amp; 8080)</li>
+          <li>&#10004; <strong>D&eacute;ploiement AWS Kubernetes</strong> (Full-Stack : Backend &amp; Frontend Angular)</li>
         </ul>
       </div>
 

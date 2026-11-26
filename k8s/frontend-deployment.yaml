@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: station-ski-ui
+  labels:
+    app: station-ski-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: station-ski-ui
+  template:
+    metadata:
+      labels:
+        app: station-ski-ui
+    spec:
+      containers:
+      - name: station-ski-ui
+        image: station-ski-ui:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
