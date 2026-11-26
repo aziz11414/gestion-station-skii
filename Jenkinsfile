@@ -10,6 +10,7 @@ pipeline {
         SONAR_TOKEN = 'squ_3b0e5c4d1892a616134ce7d8a8c49d5cbb441834'
         SONAR_HOST_URL = 'http://localhost:9000'
         IMAGE_NAME = 'gestion-station-skii'
+        NOTIFICATION_EMAIL = 'med.aziz2612@gmail.com'
     }
 
     stages {
@@ -116,6 +117,29 @@ pipeline {
                     echo [SUCCESS] Application successfully deployed to Kubernetes!
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            emailext (
+                to: "${NOTIFICATION_EMAIL}",
+                subject: "[Jenkins] ${currentBuild.currentResult ?: 'SUCCESS'} - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """Bonjour,
+
+Le build #${env.BUILD_NUMBER} du pipeline ${env.JOB_NAME} est termine avec le statut : ${currentBuild.currentResult ?: 'SUCCESS'}.
+
+Duree : ${currentBuild.durationString}
+URL du Build : ${env.BUILD_URL}
+
+--------------------------------------------------
+EXTRAIT DES LOGS DU BUILD (Console Output) :
+--------------------------------------------------
+\${BUILD_LOG, maxLines=100}
+""",
+                attachLog: true,
+                compressLog: false
+            )
         }
     }
 }
