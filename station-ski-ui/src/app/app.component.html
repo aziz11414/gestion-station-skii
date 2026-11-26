@@ -1,0 +1,1075 @@
+<div class="layout-wrapper">
+  @if (mobileMenuOpen) {
+    <div class="mobile-drawer-backdrop" @modalBackdrop (click)="mobileMenuOpen = false"></div>
+  }
+
+  <aside class="sidebar" [class.drawer-open]="mobileMenuOpen" aria-label="Navigation principale">
+    <div class="sidebar-header">
+      <div class="brand-container">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m8 3 4 8 5-5 5 15H2L8 3z"/>
+            <path d="M4.14 15.08c2.62-1.57 5.24-1.43 7.86.42 2.74 1.94 5.49 2 8.23.19"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">ALPE D'AZUR</span>
+          <span class="brand-subtitle">Exploitation Domaine</span>
+        </div>
+      </div>
+
+      <div class="backend-status-pill" [class.connected]="isBackendConnected" [class.disconnected]="!isBackendConnected">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-label">{{ isBackendConnected ? 'API Active · :8080' : 'API Déconnectée' }}</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button type="button" class="nav-item" [class.active]="activeTab === 'dashboard'" (click)="setActiveTab('dashboard')">
+        <svg class="nav-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="7" height="9" x="3" y="3" rx="1"/>
+          <rect width="7" height="5" x="14" y="3" rx="1"/>
+          <rect width="7" height="9" x="14" y="12" rx="1"/>
+          <rect width="7" height="5" x="3" y="16" rx="1"/>
+        </svg>
+        <span>Tableau de bord</span>
+      </button>
+
+      <button type="button" class="nav-item" [class.active]="activeTab === 'pistes'" (click)="setActiveTab('pistes')">
+        <svg class="nav-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m8 3 4 8 5-5 5 15H2L8 3z"/>
+        </svg>
+        <span>Pistes de Ski</span>
+        <span class="nav-badge mono-code">{{ pistes.length }}</span>
+      </button>
+
+      <button type="button" class="nav-item" [class.active]="activeTab === 'skieurs'" (click)="setActiveTab('skieurs')">
+        <svg class="nav-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Skieurs &amp; Pass</span>
+        <span class="nav-badge mono-code">{{ skiers.length }}</span>
+      </button>
+
+      <button type="button" class="nav-item" [class.active]="activeTab === 'moniteurs'" (click)="setActiveTab('moniteurs')">
+        <svg class="nav-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M8 7h8"/>
+          <path d="M8 11h6"/>
+        </svg>
+        <span>Moniteurs ESF</span>
+        <span class="nav-badge mono-code">{{ instructors.length }}</span>
+      </button>
+
+      <button type="button" class="nav-item" [class.active]="activeTab === 'cours'" (click)="setActiveTab('cours')">
+        <svg class="nav-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Cours &amp; Horaires</span>
+        <span class="nav-badge mono-code">{{ courses.length }}</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile-badge">
+        <div class="user-avatar" aria-hidden="true">MA</div>
+        <div class="user-info">
+          <span class="user-name">Mohamed Aziz H.</span>
+          <span class="user-role">Superviseur Station</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left-group">
+        <button type="button" class="btn btn-secondary btn-icon-only mobile-menu-btn" (click)="toggleMobileMenu()" aria-label="Ouvrir le menu de navigation">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+        <div class="topbar-titles">
+          <h1 class="page-title">
+            @if (activeTab === 'dashboard') { Tableau de bord opérationnel }
+            @if (activeTab === 'pistes') { Gestion des pistes du domaine }
+            @if (activeTab === 'skieurs') { Registre des skieurs &amp; abonnements }
+            @if (activeTab === 'moniteurs') { Corps des moniteurs certifiés }
+            @if (activeTab === 'cours') { Planning &amp; sessions de formation }
+          </h1>
+          <p class="page-subtitle">Station Alpe d'Azur · Synchronisé avec Spring Boot</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="refreshAllData()" [disabled]="isLoading" aria-label="Actualiser les données">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isLoading" aria-hidden="true">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+            <path d="M16 21h5v-5"/>
+          </svg>
+          <span class="hide-xs">{{ isLoading ? 'Synchronisation...' : 'Actualiser' }}</span>
+        </button>
+
+        @if (activeTab === 'dashboard' || activeTab === 'skieurs') {
+          <button type="button" class="btn btn-primary btn-sm" (click)="openAddSkierModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Nouveau Skieur</span>
+          </button>
+        }
+        @if (activeTab === 'pistes') {
+          <button type="button" class="btn btn-primary btn-sm" (click)="openAddPisteModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Nouvelle Piste</span>
+          </button>
+        }
+        @if (activeTab === 'moniteurs') {
+          <button type="button" class="btn btn-primary btn-sm" (click)="openAddInstructorModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Nouveau Moniteur</span>
+          </button>
+        }
+        @if (activeTab === 'cours') {
+          <button type="button" class="btn btn-primary btn-sm" (click)="openAddCourseModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Nouveau Cours</span>
+          </button>
+        }
+      </div>
+    </header>
+
+    <div class="content-body">
+
+      @if (backendError && !initialLoading) {
+        <div class="offline-alert-banner" @itemFade role="alert">
+          <div class="offline-alert-left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div>
+              <strong>Connexion au serveur Spring Boot interrompue</strong>
+              <p>Assurez-vous que l'API backend est démarrée sur <code class="mono-code">http://localhost:8080/stationSki</code>.</p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="refreshAllData()">Réessayer</button>
+        </div>
+      }
+
+      @if (initialLoading) {
+        <div class="dashboard-grid">
+          <div class="kpi-row">
+            @for (i of [1,2,3,4]; track i) {
+              <div class="kpi-card skeleton-card">
+                <div class="skeleton-block" style="width: 55%; height: 14px;"></div>
+                <div class="skeleton-block" style="width: 40%; height: 34px; margin-top: 8px;"></div>
+                <div class="skeleton-block" style="width: 75%; height: 12px; margin-top: 4px;"></div>
+              </div>
+            }
+          </div>
+          <div class="section-card">
+            <div class="skeleton-block" style="width: 30%; height: 18px; margin-bottom: 16px;"></div>
+            <div class="skeleton-block" style="width: 100%; height: 90px;"></div>
+          </div>
+        </div>
+      } @else {
+        <div [@viewEnter]="activeTab">
+          @if (activeTab === 'dashboard') {
+            <div class="dashboard-grid">
+              <div class="kpi-row">
+                <div class="kpi-card">
+                  <div class="kpi-card-inner">
+                    <div class="kpi-header">
+                      <span class="kpi-title">Skieurs Enregistrés</span>
+                      <div class="kpi-icon-wrapper primary" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                          <circle cx="9" cy="7" r="4"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="kpi-body">
+                      <span class="kpi-value num-tabular">{{ animatedStats.skiers }}</span>
+                      <span class="kpi-subtext">Abonnés actifs enregistrés</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="kpi-card">
+                  <div class="kpi-card-inner">
+                    <div class="kpi-header">
+                      <span class="kpi-title">Domaine Skiable</span>
+                      <div class="kpi-icon-wrapper success" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m8 3 4 8 5-5 5 15H2L8 3z"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="kpi-body">
+                      <div class="kpi-value num-tabular">{{ animatedStats.lengthKm }} <small class="kpi-unit">km</small></div>
+                      <span class="kpi-subtext">{{ animatedStats.pistes }} pistes balisées ouvertes</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="kpi-card">
+                  <div class="kpi-card-inner">
+                    <div class="kpi-header">
+                      <span class="kpi-title">Moniteurs Déployés</span>
+                      <div class="kpi-icon-wrapper warning" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="kpi-body">
+                      <span class="kpi-value num-tabular">{{ animatedStats.instructors }}</span>
+                      <span class="kpi-subtext">{{ courses.length }} sessions planifiées</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="kpi-card">
+                  <div class="kpi-card-inner">
+                    <div class="kpi-header">
+                      <span class="kpi-title">Revenu Abonnements</span>
+                      <div class="kpi-icon-wrapper info" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="12" y1="1" x2="12" y2="23"/>
+                          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="kpi-body">
+                      <div class="kpi-value num-tabular">{{ animatedStats.revenue }} <small class="kpi-unit">DT</small></div>
+                      <span class="kpi-subtext">Total forfaits comptabilisés</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="quick-ops-strip">
+                <div class="quick-ops-info">
+                  <h2>Actions Rapides Station</h2>
+                  <p>Déployez une nouvelle piste, inscrivez un skieur ou planifiez un cours en un clic.</p>
+                </div>
+                <div class="quick-ops-buttons">
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="openAddPisteModal()">+ Piste de ski</button>
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="openAddInstructorModal()">+ Moniteur ESF</button>
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="openAddCourseModal()">+ Cours / Horaire</button>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="openAddSkierModal()">+ Inscrire un Skieur</button>
+                </div>
+              </div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <h2 class="section-title">Répartition Technique des Pistes</h2>
+                  <span class="section-badge mono-code">{{ totalPistesCount }} Pistes</span>
+                </div>
+                <div class="slope-breakdown-grid">
+                  <div class="slope-meter-item">
+                    <div class="meter-label-row">
+                      <span class="badge badge-green">Vertes · Débutant</span>
+                      <span class="meter-count mono-code">{{ getPistesByColorCount('GREEN') }}</span>
+                    </div>
+                    <div class="meter-bar">
+                      <div class="meter-fill green" [style.width.%]="totalPistesCount > 0 ? (getPistesByColorCount('GREEN') / totalPistesCount * 100) : 0"></div>
+                    </div>
+                  </div>
+
+                  <div class="slope-meter-item">
+                    <div class="meter-label-row">
+                      <span class="badge badge-blue">Bleues · Intermédiaire</span>
+                      <span class="meter-count mono-code">{{ getPistesByColorCount('BLUE') }}</span>
+                    </div>
+                    <div class="meter-bar">
+                      <div class="meter-fill blue" [style.width.%]="totalPistesCount > 0 ? (getPistesByColorCount('BLUE') / totalPistesCount * 100) : 0"></div>
+                    </div>
+                  </div>
+
+                  <div class="slope-meter-item">
+                    <div class="meter-label-row">
+                      <span class="badge badge-red">Rouges · Avancé</span>
+                      <span class="meter-count mono-code">{{ getPistesByColorCount('RED') }}</span>
+                    </div>
+                    <div class="meter-bar">
+                      <div class="meter-fill red" [style.width.%]="totalPistesCount > 0 ? (getPistesByColorCount('RED') / totalPistesCount * 100) : 0"></div>
+                    </div>
+                  </div>
+
+                  <div class="slope-meter-item">
+                    <div class="meter-label-row">
+                      <span class="badge badge-black">Noires · Expert</span>
+                      <span class="meter-count mono-code">{{ getPistesByColorCount('BLACK') }}</span>
+                    </div>
+                    <div class="meter-bar">
+                      <div class="meter-fill black" [style.width.%]="totalPistesCount > 0 ? (getPistesByColorCount('BLACK') / totalPistesCount * 100) : 0"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dashboard-columns">
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <h2 class="section-title">Derniers Skieurs Inscrits</h2>
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="setActiveTab('skieurs')">Tout afficher</button>
+                  </div>
+                  @if (skiers.length === 0) {
+                    <div class="empty-state">
+                      <p>Aucun skieur enregistré pour le moment.</p>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openAddSkierModal()">Inscrire un skieur</button>
+                    </div>
+                  } @else {
+                    <div class="table-container">
+                      <table class="data-table">
+                        <thead>
+                          <tr>
+                            <th>Pass</th>
+                            <th>Skieur</th>
+                            <th>Ville</th>
+                            <th>Formule</th>
+                            <th>Expiration</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (s of skiers.slice(0, 5); track s.numSkier) {
+                            <tr @itemFade [class.newly-added-highlight]="recentlyAddedKey === 'skier-' + s.numSkier">
+                              <td class="cell-number mono-code">#{{ s.numSkier }}</td>
+                              <td class="cell-strong">
+                                {{ s.firstName }} {{ s.lastName }}
+                                @if (recentlyAddedKey === 'skier-' + s.numSkier) {
+                                  <span class="badge-new">Nouveau</span>
+                                }
+                              </td>
+                              <td>{{ s.city }}</td>
+                              <td>
+                                <span class="badge"
+                                      [class.badge-annual]="s.subscription?.typeSub === 'ANNUAL'"
+                                      [class.badge-semestriel]="s.subscription?.typeSub === 'SEMESTRIEL'"
+                                      [class.badge-monthly]="s.subscription?.typeSub === 'MONTHLY'">
+                                  {{ getSubscriptionLabel(s.subscription?.typeSub) }}
+                                </span>
+                              </td>
+                              <td class="cell-number mono-code">{{ s.subscription?.endDate || '—' }}</td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  }
+                </div>
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <h2 class="section-title">État des Pistes en Service</h2>
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="setActiveTab('pistes')">Gérer</button>
+                  </div>
+                  @if (pistes.length === 0) {
+                    <div class="empty-state">
+                      <p>Aucune piste configurée sur le domaine.</p>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openAddPisteModal()">Ajouter une piste</button>
+                    </div>
+                  } @else {
+                    <div class="piste-summary-list">
+                      @for (p of pistes.slice(0, 5); track p.numPiste) {
+                        <div class="piste-summary-item" @itemFade [class.newly-added-highlight]="recentlyAddedKey === 'piste-' + p.numPiste">
+                          <div class="piste-summary-left">
+                            <span class="color-dot" [class]="p.color.toLowerCase()" aria-hidden="true"></span>
+                            <div>
+                              <div class="piste-summary-name">
+                                {{ p.namePiste }}
+                                @if (recentlyAddedKey === 'piste-' + p.numPiste) {
+                                  <span class="badge-new">Nouveau</span>
+                                }
+                              </div>
+                              <div class="piste-summary-specs mono-code">{{ p.length }}m · Pente {{ p.slope }}%</div>
+                            </div>
+                          </div>
+                          <span class="badge" [class]="'badge-' + p.color.toLowerCase()">
+                            {{ getColorLabel(p.color) }}
+                          </span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+          @if (activeTab === 'pistes') {
+            <div class="tab-view">
+              <div class="filter-bar">
+                <div class="search-input-wrapper">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="text" [(ngModel)]="pisteSearchTerm" placeholder="Rechercher une piste par nom..." aria-label="Rechercher une piste" class="form-input search-input">
+                </div>
+
+                <div class="filter-chips" role="group" aria-label="Filtrer par couleur de piste">
+                  <button type="button" class="chip" [class.active]="pisteFilterColor === 'ALL'" (click)="pisteFilterColor = 'ALL'">Toutes ({{ pistes.length }})</button>
+                  <button type="button" class="chip" [class.active]="pisteFilterColor === 'GREEN'" (click)="pisteFilterColor = 'GREEN'">Vertes ({{ getPistesByColorCount('GREEN') }})</button>
+                  <button type="button" class="chip" [class.active]="pisteFilterColor === 'BLUE'" (click)="pisteFilterColor = 'BLUE'">Bleues ({{ getPistesByColorCount('BLUE') }})</button>
+                  <button type="button" class="chip" [class.active]="pisteFilterColor === 'RED'" (click)="pisteFilterColor = 'RED'">Rouges ({{ getPistesByColorCount('RED') }})</button>
+                  <button type="button" class="chip" [class.active]="pisteFilterColor === 'BLACK'" (click)="pisteFilterColor = 'BLACK'">Noires ({{ getPistesByColorCount('BLACK') }})</button>
+                </div>
+              </div>
+
+              @if (filteredPistes.length === 0) {
+                <div class="empty-state-large" @itemFade>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="m8 3 4 8 5-5 5 15H2L8 3z"/>
+                  </svg>
+                  <h3>Aucune piste correspondante</h3>
+                  <p>Modifiez vos critères ou créez une nouvelle piste sur le domaine skiable.</p>
+                  <button type="button" class="btn btn-primary" (click)="openAddPisteModal()">Créer une Piste</button>
+                </div>
+              } @else {
+                <div class="piste-cards-grid" [@cardStagger]="filteredPistes.length">
+                  @for (p of filteredPistes; track p.numPiste) {
+                    <article class="piste-card" @itemFade [class.newly-added-highlight]="recentlyAddedKey === 'piste-' + p.numPiste">
+                      <div class="piste-card-inner">
+                        <div class="piste-card-header">
+                          <div>
+                            <div class="piste-id-row">
+                              <span class="piste-id mono-code">Piste #{{ p.numPiste }}</span>
+                              @if (recentlyAddedKey === 'piste-' + p.numPiste) {
+                                <span class="badge-new">Nouveau</span>
+                              }
+                            </div>
+                            <h3 class="piste-name">{{ p.namePiste }}</h3>
+                          </div>
+                          <span class="badge" [class]="'badge-' + p.color.toLowerCase()">
+                            {{ getColorLabel(p.color) }}
+                          </span>
+                        </div>
+                        <div class="slope-telemetry-box">
+                          <svg class="slope-svg" viewBox="0 0 96 42" fill="none" aria-hidden="true">
+                            <polygon [attr.points]="getSlopePolygon(p.slope)" class="slope-area" [class]="p.color.toLowerCase()" />
+                            <path [attr.d]="getSlopeSvgLine(p.slope)" class="slope-line" [class]="p.color.toLowerCase()" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="4" y1="38" x2="92" y2="38" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3"/>
+                          </svg>
+                          <div class="piste-metrics-pair">
+                            <div class="metric-box">
+                              <span class="metric-label">Longueur</span>
+                              <span class="metric-value mono-code">{{ p.length }}<small> m</small></span>
+                            </div>
+                            <div class="metric-box">
+                              <span class="metric-label">Inclinaison</span>
+                              <span class="metric-value mono-code">{{ p.slope }}<small> %</small></span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="piste-card-footer">
+                          <span class="piste-skiers-count">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                              <circle cx="9" cy="7" r="4"/>
+                            </svg>
+                            <span class="mono-code">{{ p.skiers?.length || 0 }}</span> skieur(s) assigné(s)
+                          </span>
+                          <button type="button" class="btn btn-danger btn-sm btn-icon-only" (click)="requestDeletePiste(p)" [attr.aria-label]="'Supprimer la piste ' + p.namePiste">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6"/>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  }
+                </div>
+              }
+            </div>
+          }
+          @if (activeTab === 'skieurs') {
+            <div class="tab-view">
+              <div class="filter-bar">
+                <div class="search-input-wrapper">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="text" [(ngModel)]="skierSearchTerm" placeholder="Rechercher par nom, prénom ou ville..." aria-label="Rechercher un skieur" class="form-input search-input">
+                </div>
+
+                <div class="filter-chips" role="group" aria-label="Filtrer par abonnement">
+                  <button type="button" class="chip" [class.active]="skierFilterSubscription === 'ALL'" (click)="skierFilterSubscription = 'ALL'">Tous ({{ skiers.length }})</button>
+                  <button type="button" class="chip" [class.active]="skierFilterSubscription === 'ANNUAL'" (click)="skierFilterSubscription = 'ANNUAL'">Annuel</button>
+                  <button type="button" class="chip" [class.active]="skierFilterSubscription === 'SEMESTRIEL'" (click)="skierFilterSubscription = 'SEMESTRIEL'">Semestriel</button>
+                  <button type="button" class="chip" [class.active]="skierFilterSubscription === 'MONTHLY'" (click)="skierFilterSubscription = 'MONTHLY'">Mensuel</button>
+                </div>
+              </div>
+
+              @if (filteredSkiers.length === 0) {
+                <div class="empty-state-large" @itemFade>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                  </svg>
+                  <h3>Aucun skieur trouvé</h3>
+                  <p>Aucun profil ne correspond à votre recherche ou filtre actuel.</p>
+                  <button type="button" class="btn btn-primary" (click)="openAddSkierModal()">Inscrire un Skieur</button>
+                </div>
+              } @else {
+                <div class="section-card no-padding">
+                  <div class="table-container">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Pass</th>
+                          <th>Identité Skieur</th>
+                          <th>Naissance</th>
+                          <th>Ville</th>
+                          <th>Forfait</th>
+                          <th>Validité</th>
+                          <th>Tarif</th>
+                          <th class="text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (s of filteredSkiers; track s.numSkier) {
+                          <tr @itemFade [class.newly-added-highlight]="recentlyAddedKey === 'skier-' + s.numSkier">
+                            <td class="cell-number cell-strong mono-code">#{{ s.numSkier }}</td>
+                            <td>
+                              <div class="skier-cell-name">
+                                <span class="skier-avatar-sm" aria-hidden="true">{{ s.firstName.charAt(0) }}{{ s.lastName.charAt(0) }}</span>
+                                <span class="cell-strong">{{ s.firstName }} {{ s.lastName }}</span>
+                                @if (recentlyAddedKey === 'skier-' + s.numSkier) {
+                                  <span class="badge-new">Nouveau</span>
+                                }
+                              </div>
+                            </td>
+                            <td class="cell-number mono-code">{{ s.dateOfBirth }}</td>
+                            <td>{{ s.city }}</td>
+                            <td>
+                              <span class="badge"
+                                    [class.badge-annual]="s.subscription?.typeSub === 'ANNUAL'"
+                                    [class.badge-semestriel]="s.subscription?.typeSub === 'SEMESTRIEL'"
+                                    [class.badge-monthly]="s.subscription?.typeSub === 'MONTHLY'">
+                                {{ getSubscriptionLabel(s.subscription?.typeSub) }}
+                              </span>
+                            </td>
+                            <td class="cell-number mono-code">{{ s.subscription?.startDate }} &rarr; {{ s.subscription?.endDate }}</td>
+                            <td class="cell-number cell-strong mono-code">{{ s.subscription?.price || 0 }} DT</td>
+                            <td class="text-right">
+                              <div class="action-buttons-group">
+                                <button type="button" class="btn btn-secondary btn-sm" (click)="openAssignPisteModal(s)" title="Assigner à une piste">
+                                  Piste
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" (click)="openRegisterCourseModal(s)" title="Inscrire à un cours">
+                                  + Cours
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm btn-icon-only" (click)="requestDeleteSkier(s)" [attr.aria-label]="'Supprimer le skieur ' + s.firstName + ' ' + s.lastName">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          @if (activeTab === 'moniteurs') {
+            <div class="tab-view">
+              @if (instructors.length === 0) {
+                <div class="empty-state-large" @itemFade>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                  </svg>
+                  <h3>Aucun moniteur enregistré</h3>
+                  <p>Ajoutez les instructeurs ESF et associez-les aux sessions de cours.</p>
+                  <button type="button" class="btn btn-primary" (click)="openAddInstructorModal()">Ajouter un Moniteur</button>
+                </div>
+              } @else {
+                <div class="instructor-cards-grid" [@cardStagger]="instructors.length">
+                  @for (ins of instructors; track ins.numInstructor) {
+                    <article class="instructor-card" @itemFade [class.newly-added-highlight]="recentlyAddedKey === 'instructor-' + ins.numInstructor">
+                      <div class="instructor-card-header">
+                        <div class="instructor-avatar" aria-hidden="true">
+                          {{ ins.firstName.charAt(0) }}{{ ins.lastName.charAt(0) }}
+                        </div>
+                        <div class="instructor-title-wrap">
+                          <div class="instructor-name-row">
+                            <h3 class="instructor-name">{{ ins.firstName }} {{ ins.lastName }}</h3>
+                            @if (recentlyAddedKey === 'instructor-' + ins.numInstructor) {
+                              <span class="badge-new">Nouveau</span>
+                            }
+                          </div>
+                          <span class="instructor-hire mono-code">Embauché le {{ ins.dateOfHire }}</span>
+                        </div>
+                      </div>
+                      <div class="instructor-courses-section">
+                        <span class="sub-label">Cours pris en charge</span>
+                        @if (ins.courses && ins.courses.length > 0) {
+                          <div class="courses-tag-list">
+                            @for (c of ins.courses; track c.numCourse) {
+                              <span class="course-tag mono-code">
+                                #{{ c.numCourse }} · {{ c.support }} (Niv. {{ c.level }})
+                              </span>
+                            }
+                          </div>
+                        } @else {
+                          <p class="no-assigned-course">Aucun cours assigné actuellement.</p>
+                        }
+                      </div>
+                    </article>
+                  }
+                </div>
+              }
+            </div>
+          }
+          @if (activeTab === 'cours') {
+            <div class="tab-view">
+              <div class="filter-bar">
+                <div class="filter-chips" role="group" aria-label="Filtrer par discipline">
+                  <button type="button" class="chip" [class.active]="courseFilterSupport === 'ALL'" (click)="courseFilterSupport = 'ALL'">Toutes disciplines ({{ courses.length }})</button>
+                  <button type="button" class="chip" [class.active]="courseFilterSupport === 'SKI'" (click)="courseFilterSupport = 'SKI'">Ski Alpin</button>
+                  <button type="button" class="chip" [class.active]="courseFilterSupport === 'SNOWBOARD'" (click)="courseFilterSupport = 'SNOWBOARD'">Snowboard</button>
+                </div>
+              </div>
+
+              @if (filteredCourses.length === 0) {
+                <div class="empty-state-large" @itemFade>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <h3>Aucune session de cours</h3>
+                  <p>Planifiez un nouveau cours pour skieurs débutants, adultes ou enfants.</p>
+                  <button type="button" class="btn btn-primary" (click)="openAddCourseModal()">Planifier un Cours</button>
+                </div>
+              } @else {
+                <div class="course-cards-grid" [@cardStagger]="filteredCourses.length">
+                  @for (c of filteredCourses; track c.numCourse) {
+                    <article class="course-card" @itemFade [class.newly-added-highlight]="recentlyAddedKey === 'course-' + c.numCourse">
+                      <div class="course-card-top">
+                        <div class="course-badges-left">
+                          <span class="badge" [class.badge-blue]="c.support === 'SKI'" [class.badge-black]="c.support === 'SNOWBOARD'">
+                            {{ c.support === 'SKI' ? 'Ski Alpin' : 'Snowboard' }}
+                          </span>
+                          @if (recentlyAddedKey === 'course-' + c.numCourse) {
+                            <span class="badge-new">Nouveau</span>
+                          }
+                        </div>
+                        <span class="course-price mono-code">{{ c.price }} DT</span>
+                      </div>
+
+                      <h3 class="course-type">{{ getTypeCourseLabel(c.typeCourse) }}</h3>
+
+                      <div class="course-meta-row">
+                        <div class="meta-item">
+                          <span class="meta-label">Niveau</span>
+                          <span class="meta-val mono-code">Étoile {{ c.level }}</span>
+                        </div>
+                        <div class="meta-item">
+                          <span class="meta-label">Créneau</span>
+                          <span class="meta-val mono-code">{{ c.timeSlot }}h00</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" (click)="openEditCourseModal(c)">Modifier</button>
+                      </div>
+                    </article>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+        </div>
+      }
+    </div>
+  </main>
+</div>
+@if (showAddPisteModal) {
+  <div class="modal-backdrop" @modalBackdrop (click)="closeAddPisteModal()">
+    <div class="modal-dialog" @modalPanel (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-piste-title">
+      <div class="modal-header">
+        <h3 id="modal-piste-title" class="modal-title">Créer une Nouvelle Piste de Ski</h3>
+        <button type="button" class="modal-close" (click)="closeAddPisteModal()" aria-label="Fermer la fenêtre">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="pisteName" class="form-label">Nom de la Piste *</label>
+          <input id="pisteName" type="text" [(ngModel)]="newPiste.namePiste" [class.input-error]="formErrors['namePiste']" placeholder="Ex: Chamois, Grande Balme..." class="form-input">
+          @if (formErrors['namePiste']) {
+            <span class="form-error-msg">{{ formErrors['namePiste'] }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="pisteColor" class="form-label">Difficulté &amp; Couleur *</label>
+          <select id="pisteColor" [(ngModel)]="newPiste.color" class="form-select">
+            <option value="GREEN">Verte — Très facile / Débutant</option>
+            <option value="BLUE">Bleue — Facile / Intermédiaire</option>
+            <option value="RED">Rouge — Difficile / Confirmé</option>
+            <option value="BLACK">Noire — Très difficile / Expert</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="pisteLength" class="form-label">Longueur (mètres) *</label>
+            <input id="pisteLength" type="number" [(ngModel)]="newPiste.length" [class.input-error]="formErrors['length']" min="50" max="15000" class="form-input">
+            @if (formErrors['length']) {
+              <span class="form-error-msg">{{ formErrors['length'] }}</span>
+            }
+          </div>
+          <div class="form-group flex-1">
+            <label for="pisteSlope" class="form-label">Pente (%) *</label>
+            <input id="pisteSlope" type="number" [(ngModel)]="newPiste.slope" [class.input-error]="formErrors['slope']" min="1" max="90" class="form-input">
+            @if (formErrors['slope']) {
+              <span class="form-error-msg">{{ formErrors['slope'] }}</span>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddPisteModal()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="savePiste()" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+            <svg class="spin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            <span>Enregistrement...</span>
+          } @else {
+            <span>Enregistrer la Piste</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+@if (showAddSkierModal) {
+  <div class="modal-backdrop" @modalBackdrop (click)="closeAddSkierModal()">
+    <div class="modal-dialog" @modalPanel (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-skier-title">
+      <div class="modal-header">
+        <h3 id="modal-skier-title" class="modal-title">Inscription d'un Nouveau Skieur</h3>
+        <button type="button" class="modal-close" (click)="closeAddSkierModal()" aria-label="Fermer la fenêtre">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="skierFirstName" class="form-label">Prénom *</label>
+            <input id="skierFirstName" type="text" [(ngModel)]="newSkier.firstName" [class.input-error]="formErrors['firstName']" placeholder="Ex: Mohamed" class="form-input">
+            @if (formErrors['firstName']) {
+              <span class="form-error-msg">{{ formErrors['firstName'] }}</span>
+            }
+          </div>
+          <div class="form-group flex-1">
+            <label for="skierLastName" class="form-label">Nom *</label>
+            <input id="skierLastName" type="text" [(ngModel)]="newSkier.lastName" [class.input-error]="formErrors['lastName']" placeholder="Ex: Hammami" class="form-input">
+            @if (formErrors['lastName']) {
+              <span class="form-error-msg">{{ formErrors['lastName'] }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="skierDob" class="form-label">Date de Naissance *</label>
+            <input id="skierDob" type="date" [(ngModel)]="newSkier.dateOfBirth" [class.input-error]="formErrors['dateOfBirth']" class="form-input">
+            @if (formErrors['dateOfBirth']) {
+              <span class="form-error-msg">{{ formErrors['dateOfBirth'] }}</span>
+            }
+          </div>
+          <div class="form-group flex-1">
+            <label for="skierCity" class="form-label">Ville *</label>
+            <input id="skierCity" type="text" [(ngModel)]="newSkier.city" [class.input-error]="formErrors['city']" placeholder="Ex: Tunis" class="form-input">
+            @if (formErrors['city']) {
+              <span class="form-error-msg">{{ formErrors['city'] }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="modal-sub-divider">
+          <span>Forfait &amp; Abonnement</span>
+        </div>
+
+        <div class="form-group">
+          <label for="skierSubType" class="form-label">Formule d'Abonnement *</label>
+          <select id="skierSubType" [(ngModel)]="newSkier.typeSub" (change)="onSubscriptionTypeChange()" class="form-select">
+            <option value="ANNUAL">Forfait Annuel (12 mois — 250 DT)</option>
+            <option value="SEMESTRIEL">Forfait Semestriel (6 mois — 140 DT)</option>
+            <option value="MONTHLY">Forfait Mensuel (1 mois — 45 DT)</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="skierSubStart" class="form-label">Début Validité</label>
+            <input id="skierSubStart" type="date" [(ngModel)]="newSkier.startDate" (change)="onSubscriptionTypeChange()" class="form-input">
+          </div>
+          <div class="form-group flex-1">
+            <label for="skierSubEnd" class="form-label">Fin Validité (Auto)</label>
+            <input id="skierSubEnd" type="date" [(ngModel)]="newSkier.endDate" class="form-input" readonly>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="skierSubPrice" class="form-label">Tarif Total (DT)</label>
+          <input id="skierSubPrice" type="number" [(ngModel)]="newSkier.price" class="form-input">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddSkierModal()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="saveSkier()" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+            <svg class="spin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            <span>Inscription...</span>
+          } @else {
+            <span>Inscrire le Skieur</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+@if (showAssignPisteModal) {
+  <div class="modal-backdrop" @modalBackdrop (click)="closeAssignPisteModal()">
+    <div class="modal-dialog modal-dialog-sm" @modalPanel (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-assign-title">
+      <div class="modal-header">
+        <h3 id="modal-assign-title" class="modal-title">Assigner une Piste</h3>
+        <button type="button" class="modal-close" (click)="closeAssignPisteModal()" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info-text">
+          Choisissez la piste attribuée à <strong>{{ selectedSkierForPiste?.firstName }} {{ selectedSkierForPiste?.lastName }}</strong>.
+        </p>
+        <div class="form-group">
+          <label for="assignPisteSelect" class="form-label">Piste disponible *</label>
+          <select id="assignPisteSelect" [(ngModel)]="selectedPisteIdForAssignment" class="form-select">
+            @for (p of pistes; track p.numPiste) {
+              <option [ngValue]="p.numPiste">#{{ p.numPiste }} — {{ p.namePiste }} ({{ p.color }} · {{ p.length }}m)</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAssignPisteModal()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="submitAssignPiste()" [disabled]="isSubmitting || pistes.length === 0">Confirmer</button>
+      </div>
+    </div>
+  </div>
+}
+@if (showRegisterCourseModal) {
+  <div class="modal-backdrop" @modalBackdrop (click)="closeRegisterCourseModal()">
+    <div class="modal-dialog modal-dialog-sm" @modalPanel (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-reg-title">
+      <div class="modal-header">
+        <h3 id="modal-reg-title" class="modal-title">Inscrire à un Cours</h3>
+        <button type="button" class="modal-close" (click)="closeRegisterCourseModal()" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info-text">
+          Inscrire <strong>{{ selectedSkierForCourse?.firstName }} {{ selectedSkierForCourse?.lastName }}</strong> à une session.
+        </p>
+        <div class="form-group">
+          <label for="regCourseSelect" class="form-label">Session de cours *</label>
+          <select id="regCourseSelect" [(ngModel)]="selectedCourseIdForReg" class="form-select">
+            @for (c of courses; track c.numCourse) {
+              <option [ngValue]="c.numCourse">#{{ c.numCourse }} — {{ getTypeCourseLabel(c.typeCourse) }} ({{ c.support }}, {{ c.timeSlot }}h)</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="regWeekInput" class="form-label">Numéro de semaine (1–52) *</label>
+          <input id="regWeekInput" type="number" [(ngModel)]="regNumWeek" min="1" max="52" class="form-input">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeRegisterCourseModal()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="submitRegisterCourse()" [disabled]="isSubmitting || courses.length === 0">Inscrire au Cours</button>
+      </div>
+    </div>
+  </div>
+}
+@if (showAddInstructorModal) {
+  <div class="modal-backdrop" @modalBackdrop (click)="closeAddInstructorModal()">
+    <div class="modal-dialog" @modalPanel (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-inst-title">
+      <div class="modal-header">
+        <h3 id="modal-inst-title" class="modal-title">Ajouter un Moniteur ESF</h3>
+        <button type="button" class="modal-close" (click)="closeAddInstructorModal()" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="instFirstName" class="form-label">Prénom *</label>
+            <input id="instFirstName" type="text" [(ngModel)]="newInstructor.firstName" [class.input-error]="formErrors['instFirstName']" placeholder="Ex: Jean-Luc" class="form-input">
+            @if (formErrors['instFirstName']) {
+              <span class="form-error-msg">{{ formErrors['instFirstName'] }}</span>
+            }
+          </div>
+          <div class="form-group flex-1">
+            <label for="instLastName" class="form-label">Nom *</label>
+            <input id="instLastName" type="text" [(ngModel)]="newInstructor.lastName" [class.input-error]="formErrors['instLastName']" placeholder="Ex: Blanc" class="form-input">
+            @if (formErrors['instLastName']) {
+              <span class="form-error-msg">{{ formErrors['instLastName'] }}</span>
+            }
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="instHireDate" class="form-label">Date d'embauche *</label>
+          <input id="instHireDate" type="date" [(ngModel)]="newInstructor.dateOfHire" class="form-input">
+        </div>
+        <div class="form-group">
+          <label for="instAssignCourse" class="form-label">Assigner un cours (Optionnel)</label>
+          <select id="instAssignCourse" [(ngModel)]="newInstructor.assignCourseId" class="form-select">
+            <option [ngValue]="null">— Aucun cours assigné —</option>
+            @for (c of courses; track c.numCourse) {
+              <option [ngValue]="c.numCourse">Cours #{{ c.numCourse }} ({{ c.support }} · Niv {{ c.level }} · {{ c.timeSlot }}h)</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddInstructorModal()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="saveInstructor()" [disabled]="isSubmitting">Enregistrer le Moniteur</button>
+      </div>
+    </div>
+  </div>
+}
+@if (showAddCourseModal) {
+  <div class="modal-backdrop" @modalBackdrop (click)="closeAddCourseModal()">
+    <div class="modal-dialog" @modalPanel (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-course-title">
+      <div class="modal-header">
+        <h3 id="modal-course-title" class="modal-title">{{ editingCourseId ? 'Modifier le Cours #' + editingCourseId : 'Planifier un Nouveau Cours' }}</h3>
+        <button type="button" class="modal-close" (click)="closeAddCourseModal()" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="courseSupport" class="form-label">Discipline *</label>
+            <select id="courseSupport" [(ngModel)]="newCourse.support" class="form-select">
+              <option value="SKI">Ski Alpin</option>
+              <option value="SNOWBOARD">Snowboard</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="courseLevel" class="form-label">Niveau (1 à 5) *</label>
+            <input id="courseLevel" type="number" [(ngModel)]="newCourse.level" [class.input-error]="formErrors['courseLevel']" min="1" max="5" class="form-input">
+            @if (formErrors['courseLevel']) {
+              <span class="form-error-msg">{{ formErrors['courseLevel'] }}</span>
+            }
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="courseType" class="form-label">Type de Session *</label>
+          <select id="courseType" [(ngModel)]="newCourse.typeCourse" class="form-select">
+            <option value="COLLECTIVE_CHILDREN">Collectif Enfants (&lt; 16 ans)</option>
+            <option value="COLLECTIVE_ADULT">Collectif Adultes (&ge; 16 ans)</option>
+            <option value="INDIVIDUAL">Cours Individuel</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="courseSlot" class="form-label">Créneau Horaire (8–17h) *</label>
+            <input id="courseSlot" type="number" [(ngModel)]="newCourse.timeSlot" min="8" max="17" class="form-input">
+          </div>
+          <div class="form-group flex-1">
+            <label for="coursePrice" class="form-label">Tarif (DT) *</label>
+            <input id="coursePrice" type="number" [(ngModel)]="newCourse.price" [class.input-error]="formErrors['coursePrice']" min="10" class="form-input">
+            @if (formErrors['coursePrice']) {
+              <span class="form-error-msg">{{ formErrors['coursePrice'] }}</span>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddCourseModal()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="saveCourse()" [disabled]="isSubmitting">{{ editingCourseId ? 'Mettre à jour' : 'Créer la Session' }}</button>
+      </div>
+    </div>
+  </div>
+}
+@if (deleteConfirmTarget) {
+  <div class="modal-backdrop" @modalBackdrop (click)="cancelDelete()">
+    <div class="modal-dialog modal-dialog-sm" @modalPanel (click)="$event.stopPropagation()" role="alertdialog" aria-modal="true" aria-labelledby="delete-title">
+      <div class="modal-header">
+        <h3 id="delete-title" class="modal-title">Confirmer la suppression</h3>
+        <button type="button" class="modal-close" (click)="cancelDelete()" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info-text">
+          Êtes-vous sûr de vouloir supprimer définitivement <strong>{{ deleteConfirmTarget.label }}</strong> ? Cette action est irréversible.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelDelete()" [disabled]="isSubmitting">Annuler</button>
+        <button type="button" class="btn btn-danger-solid" (click)="confirmDelete()" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Suppression...' : 'Supprimer définitivement' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+<div class="toast-container" aria-live="polite">
+  @for (t of toastService.toasts | async; track t.id) {
+    <div class="toast" [class]="'toast-' + t.type" @toastAnim>
+      <div class="toast-icon-badge" aria-hidden="true">
+        @if (t.type === 'success') {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12" class="svg-draw-check"/>
+          </svg>
+        }
+        @if (t.type === 'error') {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+        }
+        @if (t.type === 'warning') {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        }
+        @if (t.type === 'info') {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        }
+      </div>
+
+      <div class="toast-content">
+        @if (t.title) {
+          <div class="toast-title">{{ t.title }}</div>
+        }
+        <div class="toast-desc">{{ t.message }}</div>
+      </div>
+
+      <button type="button" class="modal-close" (click)="toastService.remove(t.id)" aria-label="Fermer la notification">&times;</button>
+
+      <div class="toast-progress-track">
+        <div class="toast-progress-fill" [style.animationDuration.ms]="t.durationMs"></div>
+      </div>
+    </div>
+  }
+</div>

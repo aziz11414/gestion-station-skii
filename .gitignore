@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Angular Frontend (station-ski-ui) ###
+station-ski-ui/node_modules/
+station-ski-ui/.angular/
+station-ski-ui/dist/
+station-ski-ui/tmp/
+station-ski-ui/.vscode/
+station-ski-ui/*.log
+

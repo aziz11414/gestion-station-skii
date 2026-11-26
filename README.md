@@ -1,14 +1,16 @@
-# Gestion Station de Ski — Backend REST & Pipeline CI/CD DevOps
+# Gestion Station de Ski — Full-Stack (Spring Boot & Angular) & DevOps CI/CD
 
-Projet d'ingénierie logicielle et d'intégration continue / déploiement continu (DevOps) pour la gestion d'un domaine skiable avec Spring Boot, Docker, Jenkins, SonarQube, Nexus, Kubernetes, Terraform et observabilité Prometheus / Grafana.
+Projet d'ingénierie logicielle et d'intégration continue / déploiement continu (DevOps) pour la gestion d'un domaine skiable avec Spring Boot, Angular 17, Docker, Docker Compose, Jenkins, SonarQube, Nexus, Kubernetes, Terraform et observabilité Prometheus / Grafana.
 
 ---
 
 ## Présentation du Projet
 
-**Gestion Station de Ski** est une application d'entreprise développée avec **Spring Boot 2.7.5** et **Java 17**. Elle expose une API REST complète pour orchestrer l'ensemble des activités d'un domaine skiable : la gestion des skieurs, des moniteurs, des cours, des inscriptions, des abonnements et des pistes.
+**Gestion Station de Ski** est une application d'entreprise Full-Stack :
+- **Backend Spring Boot 2.7.5 & Java 17** : expose une API REST complète pour orchestrer l'ensemble des activités d'un domaine skiable (gestion des skieurs, moniteurs, cours, inscriptions, abonnements et pistes).
+- **Frontend Angular 17** : tableau de bord opérationnel moderne et responsive avec KPI temps réel, gestion interactive des skieurs, inscriptions aux cours et monitoring de la station.
 
-Le projet intègre une **chaîne industrielle DevOps complète** et automatisée : intégration continue (CI), analyse statique de code et couverture de tests, déploiement d'artefacts binaires sur Nexus, conteneurisation Docker, provisionnement d'infrastructure as Code (IaC) avec Terraform sur AWS, orchestration de conteneurs avec Kubernetes, et supervision en temps réel avec Prometheus et Grafana.
+Le projet intègre une **chaîne industrielle DevOps complète** et automatisée : intégration continue (CI), analyse statique de code et couverture de tests, déploiement d'artefacts binaires sur Nexus, conteneurisation Docker, orchestration multi-conteneurs Docker Compose, provisionnement d'infrastructure as Code (IaC) avec Terraform sur AWS, orchestration de conteneurs avec Kubernetes, et supervision en temps réel avec Prometheus et Grafana.
 
 ---
 
@@ -38,6 +40,13 @@ Le projet intègre une **chaîne industrielle DevOps complète** et automatisée
   * Springdoc OpenAPI 1.6.12 (Documentation interactive Swagger)
 * **Base de données** : MySQL 8.0 (Driver `mysql-connector-j`)
 * **Tests & Qualité** : JUnit 5, Mockito, JaCoCo (Couverture de code)
+
+### Frontend Applicatif
+* **Framework** : Angular 17 (Architecture Standalone, TypeScript, RxJS)
+* **Design & Expérience Utilisateur** : Design System Alpe d'Azur (Typographie Manrope, palette Ink & Mist, KPI cards animées, profil d'altitude SVG)
+* **Conteneurisation Frontend** : Docker multi-stage (`node:20-alpine` build + `nginx:1.27-alpine` runtime, image ultra-légère de 21 Mo)
+* **Orchestration Multi-conteneurs** : Docker Compose (`docker-compose.yml`) avec réseau unifié reliant Frontend (`:8082`) et Backend (`:8080`)
+
 
 ### Écosystème DevOps & Cloud
 * **Intégration Continue** : Jenkins (Pipeline Déclaratif as Code via `Jenkinsfile`)
