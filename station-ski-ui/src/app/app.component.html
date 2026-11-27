@@ -20,7 +20,7 @@
 
       <div class="backend-status-pill" [class.connected]="isBackendConnected" [class.disconnected]="!isBackendConnected">
         <span class="status-dot" aria-hidden="true"></span>
-        <span class="status-label">{{ isBackendConnected ? 'API Active · :8080' : 'API Déconnectée' }}</span>
+        <span class="status-label">{{ isBackendConnected ? 'API Connectée' : 'API Déconnectée' }}</span>
       </div>
     </div>
 
@@ -170,7 +170,7 @@
             </svg>
             <div>
               <strong>Connexion au serveur Spring Boot interrompue</strong>
-              <p>Assurez-vous que l'API backend est démarrée sur <code class="mono-code">http://localhost:8080/stationSki</code>.</p>
+              <p>Vérifiez que le service backend Spring Boot est opérationnel sur <code class="mono-code">/stationSki</code>.</p>
             </div>
           </div>
           <button type="button" class="btn btn-secondary btn-sm" (click)="refreshAllData()">Réessayer</button>

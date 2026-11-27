@@ -7,7 +7,10 @@ import { Course, Instructor, Piste, Registration, Skier, Subscription, Support, 
   providedIn: 'root'
 })
 export class SkiStationService {
-  private readonly baseUrl = 'http://localhost:8080/stationSki';
+  // Utilise /stationSki en relatif pour fonctionner directement derrière Nginx sur AWS ou Docker, et localhost:8080 en dev local sur :4200
+  private readonly baseUrl = (typeof window !== 'undefined' && window.location.port !== '4200')
+    ? '/stationSki'
+    : 'http://localhost:8080/stationSki';
 
   constructor(private http: HttpClient) {}
 
